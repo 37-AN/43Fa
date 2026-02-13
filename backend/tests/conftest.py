@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.infrastructure.db.base import Base
+from app.infrastructure.db.session import get_db
 from app.infrastructure.db.models import User
 from app.infrastructure.db.session import get_db
 from app.infrastructure.security.auth import get_password_hash

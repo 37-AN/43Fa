@@ -34,6 +34,7 @@ Default users:
 - `make lint` run ruff + black checks
 
 ## API Highlights
+- `POST /datasets/upload`
 - `POST /auth/login`
 - `POST /datasets/upload` (admin only)
 - `GET /datasets`
@@ -44,6 +45,12 @@ Default users:
 - `GET /insights?date=YYYY-MM-DD`
 - `GET /metrics`
 
+Frontend dev mode proxies `/api/*` to backend (`VITE_PROXY_TARGET`) to avoid browser connection issues.
+
+OpenAPI tags/examples are available at `/docs`.
+
+## Security/OWASP alignment (MVP)
+- No credentials required in MVP mode (open local demo API).
 OpenAPI tags/examples are available at `/docs`.
 
 ## Security/OWASP alignment (MVP)
@@ -54,6 +61,10 @@ OpenAPI tags/examples are available at `/docs`.
 - rate limiting via `slowapi`
 
 ## Demo Script (sales)
+1. Upload `backend/sample_data/sample_shift_a.csv` and `sample_shift_b.csv`.
+2. Open dashboard and show KPI cards + trends.
+3. Show anomalies and drill into worst machines.
+4. Call `/insights` to narrate deterministic AI summary.
 1. Login as `admin`.
 2. Upload `backend/sample_data/sample_shift_a.csv` and `sample_shift_b.csv`.
 3. Open dashboard and show KPI cards + trends.

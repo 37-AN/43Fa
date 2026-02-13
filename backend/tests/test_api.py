@@ -3,6 +3,7 @@ from pathlib import Path
 from .conftest import client
 
 
+def test_upload_and_overview_happy_path():
 def get_token(username: str = "admin", password: str = "admin123") -> str:
     resp = client.post("/auth/login", json={"username": username, "password": password})
     assert resp.status_code == 200

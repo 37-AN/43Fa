@@ -1,3 +1,7 @@
+"""Auth dependency module retained only for future extension.
+
+Current MVP mode is credential-free and does not use these dependencies.
+"""
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt

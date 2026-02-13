@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import VChart from 'vue-echarts'
+import api from '../api/client'
 import api, { setToken } from '../api/client'
 import KpiCards from '../components/KpiCards.vue'
 

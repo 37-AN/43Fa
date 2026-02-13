@@ -4,6 +4,7 @@ import DashboardView from '../views/DashboardView.vue'
 
 export default createRouter({
   history: createWebHistory(),
+  routes: [{ path: '/', component: DashboardView }]
   routes: [
     { path: '/', component: LoginView },
     { path: '/dashboard', component: DashboardView }
