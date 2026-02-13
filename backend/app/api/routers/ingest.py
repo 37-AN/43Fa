@@ -4,6 +4,7 @@ import pandas as pd
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
+from app.api.dependencies.auth import require_admin
 from app.api.schemas.common import DatasetOut
 from app.config import get_settings
 from app.infrastructure.metrics.prometheus import upload_counter
@@ -19,6 +20,7 @@ REQUIRED_COLUMNS = {"downtime", "scrap", "output", "shift", "machine_id", "opera
 @router.post("/upload", response_model=DatasetOut)
 def upload_csv(
     file: UploadFile = File(...),
+    _: object = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> DatasetOut:
     content = file.file.read()

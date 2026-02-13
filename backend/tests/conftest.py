@@ -9,6 +9,9 @@ from sqlalchemy.orm import sessionmaker
 
 from app.infrastructure.db.base import Base
 from app.infrastructure.db.session import get_db
+from app.infrastructure.db.models import User
+from app.infrastructure.db.session import get_db
+from app.infrastructure.security.auth import get_password_hash
 from app.main import app
 
 engine = create_engine("sqlite+pysqlite:///./test.db", connect_args={"check_same_thread": False})
@@ -26,4 +29,16 @@ def override_get_db():
 
 
 app.dependency_overrides[get_db] = override_get_db
+
+
+def seed_users():
+    db = TestingSessionLocal()
+    if not db.query(User).filter(User.username == "admin").first():
+        db.add(User(username="admin", hashed_password=get_password_hash("admin123"), role="admin"))
+        db.add(User(username="viewer", hashed_password=get_password_hash("viewer123"), role="viewer"))
+        db.commit()
+    db.close()
+
+
+seed_users()
 client = TestClient(app)

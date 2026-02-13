@@ -9,6 +9,7 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 
 from app.api.routers.analytics import router as analytics_router
+from app.api.routers.auth import router as auth_router
 from app.api.routers.ingest import router as ingest_router
 from app.config import get_settings
 from app.infrastructure.logging.logger import setup_logging
@@ -50,5 +51,6 @@ def metrics():
     return PlainTextResponse(generate_latest().decode("utf-8"), media_type=CONTENT_TYPE_LATEST)
 
 
+app.include_router(auth_router)
 app.include_router(ingest_router)
 app.include_router(analytics_router)

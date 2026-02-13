@@ -17,3 +17,4 @@ export default defineConfig({
     }
   }
 })
+export default defineConfig({ plugins: [vue()] })

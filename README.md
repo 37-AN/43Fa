@@ -22,6 +22,9 @@ Analytics --> UI[Vue Dashboard]
 3. `make migrate && make seed`
 4. Open UI at `http://localhost:5173`
 
+Default users:
+- admin/admin123
+- viewer/viewer123
 
 ## Commands
 - `make dev` start full stack
@@ -32,6 +35,8 @@ Analytics --> UI[Vue Dashboard]
 
 ## API Highlights
 - `POST /datasets/upload`
+- `POST /auth/login`
+- `POST /datasets/upload` (admin only)
 - `GET /datasets`
 - `GET /kpi/overview?date=YYYY-MM-DD`
 - `GET /kpi/machines?from=YYYY-MM-DD&to=YYYY-MM-DD`
@@ -46,6 +51,10 @@ OpenAPI tags/examples are available at `/docs`.
 
 ## Security/OWASP alignment (MVP)
 - No credentials required in MVP mode (open local demo API).
+OpenAPI tags/examples are available at `/docs`.
+
+## Security/OWASP alignment (MVP)
+- JWT auth + role guard for mutation endpoints
 - input validation via Pydantic + CSV schema checks
 - upload size/row limits
 - pagination bounds on list endpoints
@@ -56,6 +65,11 @@ OpenAPI tags/examples are available at `/docs`.
 2. Open dashboard and show KPI cards + trends.
 3. Show anomalies and drill into worst machines.
 4. Call `/insights` to narrate deterministic AI summary.
+1. Login as `admin`.
+2. Upload `backend/sample_data/sample_shift_a.csv` and `sample_shift_b.csv`.
+3. Open dashboard and show KPI cards + trends.
+4. Show anomalies and drill into worst machines.
+5. Call `/insights` to narrate deterministic AI summary.
 
 ## Notes
 - Logs are JSON to stdout.
