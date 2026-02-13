@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: shadow
+      POSTGRES_PASSWORD: shadow
+      POSTGRES_DB: shadowplant
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://shadow:shadow@db:5432/shadowplant
+      SECRET_KEY: dev-secret-key
+      RATE_LIMIT: 120/minute
+    depends_on: [db]
+    ports: ["8000:8000"]
+  frontend:
+    build: ./frontend
+    environment:
+      VITE_API_URL: http://localhost:8000
+    depends_on: [api]
+    ports: ["5173:5173"]
+  adminer:
+    image: adminer
+    ports: ["8080:8080"]
+    depends_on: [db]
+volumes:
+  pgdata:
