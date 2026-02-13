@@ -1,0 +1,4 @@
+timestamp,machine_id,operator_id,shift,downtime,scrap,output
+2026-01-10T08:00:00,M-100,OP-01,A,35,21,510
+2026-01-10T08:00:00,M-200,OP-02,A,50,28,465
+2026-01-10T08:00:00,M-300,OP-03,A,42,24,490
