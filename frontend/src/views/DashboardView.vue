@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import VChart from 'vue-echarts'
-import api, { setToken } from '../api/client'
+import api from '../api/client'
 import KpiCards from '../components/KpiCards.vue'
 
 const today = new Date().toISOString().slice(0, 10)
@@ -21,8 +21,6 @@ const chartOption = computed(() => ({
 }))
 
 onMounted(async () => {
-  const token = localStorage.getItem('token')
-  if (token) setToken(token)
   const kpiRes = await api.get('/kpi/overview', { params: { date: today } })
   kpi.value = kpiRes.data
   const machineRes = await api.get('/kpi/machines', { params: { from: today, to: today } })

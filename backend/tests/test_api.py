@@ -3,20 +3,12 @@ from pathlib import Path
 from .conftest import client
 
 
-def get_token(username: str = "admin", password: str = "admin123") -> str:
-    resp = client.post("/auth/login", json={"username": username, "password": password})
-    assert resp.status_code == 200
-    return resp.json()["access_token"]
-
-
-def test_login_and_upload_and_overview_happy_path():
-    token = get_token()
+def test_upload_and_overview_happy_path():
     file_path = Path("sample_data/sample_shift_a.csv")
     with file_path.open("rb") as f:
         response = client.post(
             "/datasets/upload",
             files={"file": ("sample_shift_a.csv", f, "text/csv")},
-            headers={"Authorization": f"Bearer {token}"},
         )
     assert response.status_code == 200
 
