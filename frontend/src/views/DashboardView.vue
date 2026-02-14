@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import VChart from 'vue-echarts'
-import api from '../api/client'
 import api, { setToken } from '../api/client'
 import KpiCards from '../components/KpiCards.vue'
 
@@ -23,7 +22,10 @@ const chartOption = computed(() => ({
 
 onMounted(async () => {
   const token = localStorage.getItem('token')
-  if (token) setToken(token)
+  if (token) {
+    setToken(token)
+  }
+
   const kpiRes = await api.get('/kpi/overview', { params: { date: today } })
   kpi.value = kpiRes.data
   const machineRes = await api.get('/kpi/machines', { params: { from: today, to: today } })
@@ -42,10 +44,14 @@ onMounted(async () => {
       <div>
         <h3>Worst Machines (by downtime)</h3>
         <table>
-          <tr><th>Machine</th><th>Downtime</th><th>Output</th></tr>
-          <tr v-for="m in [...machines].sort((a,b)=>b.downtime-a.downtime).slice(0,5)" :key="m.machine_id + m.report_date">
-            <td>{{ m.machine_id }}</td><td>{{ m.downtime.toFixed(1) }}</td><td>{{ m.output.toFixed(1) }}</td>
-          </tr>
+          <thead>
+            <tr><th>Machine</th><th>Downtime</th><th>Output</th></tr>
+          </thead>
+          <tbody>
+            <tr v-for="m in [...machines].sort((a,b)=>b.downtime-a.downtime).slice(0,5)" :key="m.machine_id + m.report_date">
+              <td>{{ m.machine_id }}</td><td>{{ m.downtime.toFixed(1) }}</td><td>{{ m.output.toFixed(1) }}</td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </section>
