@@ -5,10 +5,35 @@ from pydantic import BaseModel
 
 class KPIOverviewDTO(BaseModel):
     date: date
-    availability_proxy: float
+    availability_percent: float
+    scrap_percent: float
     downtime_minutes: float
-    scrap_units: float
     throughput_units: float
+    oee_proxy: float
+
+
+class MachineTimeseriesPointDTO(BaseModel):
+    date: date
+    machine_id: str
+    downtime_minutes: float
+    throughput_units: float
+    scrap_percent: float
+
+
+class ShiftAggregateDTO(BaseModel):
+    date: date
+    shift: str
+    machine_id: str
+    downtime_minutes: float
+    throughput_units: float
+    scrap_percent: float
+
+
+class DayAggregateDTO(BaseModel):
+    date: date
+    downtime_minutes: float
+    throughput_units: float
+    scrap_percent: float
 
 
 class ForecastDTO(BaseModel):

@@ -38,8 +38,10 @@ Default users:
 - `POST /auth/login`
 - `POST /datasets/upload` (admin only)
 - `GET /datasets`
-- `GET /kpi/overview?date=YYYY-MM-DD`
-- `GET /kpi/machines?from=YYYY-MM-DD&to=YYYY-MM-DD`
+- `GET /kpi/overview?date=YYYY-MM-DD` (returns availability_percent, scrap_percent, throughput_units, downtime_minutes, oee_proxy)
+- `GET /kpi/machines?from=YYYY-MM-DD&to=YYYY-MM-DD&machine_id=M-100`
+- `GET /kpi/shifts?from=YYYY-MM-DD&to=YYYY-MM-DD&machine_id=M-100`
+- `GET /kpi/days?from=YYYY-MM-DD&to=YYYY-MM-DD&machine_id=M-100`
 - `GET /anomalies?from=...&to=...&severity=high&limit=50&offset=0`
 - `GET /forecasts?machine_id=M-100&horizon_days=3`
 - `GET /insights?date=YYYY-MM-DD`
