@@ -7,7 +7,7 @@ import * as echarts from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { LineChart } from 'echarts/charts'
 import { TooltipComponent, LegendComponent, GridComponent } from 'echarts/components'
-import VChart, { use as vueEChartsUse } from 'vue-echarts'
+import VChart from 'vue-echarts'
 
 const app = createApp(App)
 app.use(router)
@@ -15,8 +15,7 @@ app.use(router)
 echarts.use([CanvasRenderer, LineChart, TooltipComponent, LegendComponent, GridComponent])
 
 app.component('v-chart', VChart)
-// register echarts instance with vue-echarts and provide globally
-vueEChartsUse(echarts)
+// provide echarts instance for vue-echarts and other code
 app.provide('echarts', echarts)
 app.config.globalProperties.$echarts = echarts
 // expose on window for any third-party code expecting a global

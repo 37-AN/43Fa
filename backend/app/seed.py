@@ -34,10 +34,21 @@ def generate_data(days: int = 180) -> pd.DataFrame:
 def seed() -> None:
     db = SessionLocal()
     try:
-        if not db.query(User).filter(User.username == "admin").first():
-            db.add(User(username="admin", hashed_password=get_password_hash("admin123"), role="admin"))
-            db.add(User(username="viewer", hashed_password=get_password_hash("viewer123"), role="viewer"))
-            db.commit()
+        # ensure default users exist and use current password hash format
+        # (migrate legacy bcrypt hashes if found)
+        default_users = [
+            ("admin", "admin123", "admin"),
+            ("viewer", "viewer123", "viewer"),
+        ]
+        for username, plain_password, role in default_users:
+            user = db.query(User).filter(User.username == username).first()
+            if not user:
+                db.add(User(username=username, hashed_password=get_password_hash(plain_password), role=role))
+            elif user.hashed_password and user.hashed_password.startswith("$2"):
+                # migrate legacy bcrypt hash to current format
+                user.hashed_password = get_password_hash(plain_password)
+                db.add(user)
+        db.commit()
         df = generate_data()
         IngestRepository(db).ingest_dataframe("synthetic_seed.csv", df)
         AnalyticsRepository(db).recompute_daily_aggregates()
