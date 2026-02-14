@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import * as echarts from 'echarts'
 import api, { setToken } from '../api/client'
 import KpiCards from '../components/KpiCards.vue'
 
@@ -40,7 +39,7 @@ onMounted(async () => {
     <h1>Factory Dashboard</h1>
     <KpiCards :kpi="kpi" />
     <section class="grid">
-      <v-chart class="chart" :echarts="echarts" :option="chartOption" autoresize />
+      <v-chart class="chart" :option="chartOption" autoresize />
       <div>
         <h3>Worst Machines (by downtime)</h3>
         <table>

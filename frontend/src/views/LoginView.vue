@@ -15,7 +15,8 @@ const submit = async () => {
     localStorage.setItem('token', data.access_token)
     setToken(data.access_token)
     await router.push('/dashboard')
-  } catch {
+  } catch (err) {
+    console.error('Login error:', err)
     error.value = 'Invalid credentials'
   }
 }
@@ -24,14 +25,52 @@ const submit = async () => {
 <template>
   <main class="login">
     <h1>ShadowPlant AI</h1>
-    <input v-model="username" placeholder="Username" />
-    <input v-model="password" placeholder="Password" type="password" />
-    <button @click="submit">Login</button>
-    <p v-if="error">{{ error }}</p>
+    <form @submit.prevent="submit">
+      <input 
+        v-model="username" 
+        type="text"
+        placeholder="Username" 
+      />
+      <input 
+        v-model="password" 
+        type="password"
+        placeholder="Password" 
+      />
+      <button type="submit">Login</button>
+      <p v-if="error" class="error">{{ error }}</p>
+    </form>
   </main>
 </template>
 
 <style scoped>
-.login { max-width: 360px; margin: 80px auto; display: grid; gap: 12px; }
-button { padding: 10px; }
+.login { 
+  max-width: 360px; 
+  margin: 80px auto; 
+  display: grid; 
+  gap: 12px;
+  font-family: system-ui, sans-serif;
+}
+
+input { 
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button { 
+  padding: 10px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #555;
+}
+
+.error {
+  color: red;
+}
 </style>
