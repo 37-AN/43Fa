@@ -5,17 +5,34 @@ from passlib.context import CryptContext
 
 from app.config import get_settings
 
-pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"])
+
+
+import hashlib
+import secrets
+
 settings = get_settings()
 ALGORITHM = "HS256"
 
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
-
-
 def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+    salt = secrets.token_hex(32)
+    pwdhash = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt.encode("utf-8"), 480000)
+    return f"$pbkdf2-sha256$480000${salt}${pwdhash.hex()}"
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    try:
+        parts = hashed_password.split("$")
+        if len(parts) != 5 or parts[1] != "pbkdf2-sha256":
+            return False
+        iterations = int(parts[2])
+        salt = parts[3]
+        expected_hash = parts[4]
+        pwdhash = hashlib.pbkdf2_hmac("sha256", plain_password.encode("utf-8"), salt.encode("utf-8"), iterations)
+        return pwdhash.hex() == expected_hash
+    except (IndexError, ValueError):
+        return False
 
 
 def create_access_token(subject: str, role: str) -> str:
