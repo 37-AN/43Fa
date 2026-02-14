@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     rate_limit: str = "60/minute"
     max_upload_rows: int = 100000
     max_upload_size_mb: int = 10
+    mssql_database_url: str | None = None
 
 
 @lru_cache
