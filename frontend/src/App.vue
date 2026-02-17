@@ -5,8 +5,6 @@
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap');
-
 :root {
   --bg: #0b0f14;
   --panel-bg: #0f141c;
@@ -18,8 +16,8 @@
   --accent-warning: #ff9100;
   --accent-critical: #ff1744;
   --accent-info: #00b0ff;
-  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 html,

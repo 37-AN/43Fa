@@ -24,8 +24,31 @@ export const useDashboardData = () => {
   const lastRefreshed = ref<Date | null>(null)
   const apiAlive = ref(false)
   const autoRefresh = ref(true)
+  const hasInitializedDate = ref(false)
 
   let intervalId: number | null = null
+
+  const initializeDatesFromData = async () => {
+    if (hasInitializedDate.value) return
+    hasInitializedDate.value = true
+    try {
+      const res = await api.get('/kpi/days', {
+        params: {
+          from: '2000-01-01',
+          to: today
+        }
+      })
+      const rows = Array.isArray(res.data) ? res.data : []
+      if (rows.length === 0) return
+      const latest = String(rows[rows.length - 1].date || '')
+      if (latest) {
+        fromDate.value = latest
+        toDate.value = latest
+      }
+    } catch (err) {
+      console.warn('Failed to initialize dashboard date from data', err)
+    }
+  }
 
   const loadData = async () => {
     loading.value = true
@@ -86,7 +109,7 @@ export const useDashboardData = () => {
   const shiftOptions = computed<ShiftOption[]>(() => ['All', 'Shift A', 'Shift B', 'Shift C'])
 
   onMounted(() => {
-    loadData()
+    initializeDatesFromData().finally(loadData)
     if (autoRefresh.value) startAutoRefresh()
   })
 

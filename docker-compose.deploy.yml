@@ -37,6 +37,23 @@ services:
     networks:
       - dmz_core
 
+  shadowplant-bootstrap-users:
+    build:
+      context: ./backend
+    profiles: ["edge", "hybrid", "dev"]
+    restart: "no"
+    command: ["python", "-m", "app.bootstrap_users"]
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://shadow:shadow@shadowplant-db:5432/shadowplant}
+      SECRET_KEY: ${SECRET_KEY:-change-me-now}
+    depends_on:
+      shadowplant-db:
+        condition: service_healthy
+      shadowplant-migrate:
+        condition: service_completed_successfully
+    networks:
+      - dmz_core
+
   shadowplant-api:
     build:
       context: ./backend
@@ -53,7 +70,7 @@ services:
     depends_on:
       shadowplant-db:
         condition: service_healthy
-      shadowplant-migrate:
+      shadowplant-bootstrap-users:
         condition: service_completed_successfully
     volumes:
       - heartbeat:/var/run/shadowplant
@@ -81,7 +98,7 @@ services:
     depends_on:
       shadowplant-db:
         condition: service_healthy
-      shadowplant-migrate:
+      shadowplant-bootstrap-users:
         condition: service_completed_successfully
     volumes:
       - heartbeat:/var/run/shadowplant
@@ -147,6 +164,8 @@ services:
     volumes:
       - ./collector:/collector
     depends_on:
+      shadowplant-bootstrap-users:
+        condition: service_completed_successfully
       shadowplant-api:
         condition: service_healthy
     networks:

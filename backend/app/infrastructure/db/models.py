@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Date, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, Boolean, Date, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.infrastructure.db.base import Base
@@ -80,3 +80,49 @@ class Anomaly(Base):
     z_score: Mapped[float] = mapped_column(Float)
     severity: Mapped[str] = mapped_column(String(20), index=True)
     insight: Mapped[str] = mapped_column(Text)
+
+
+class Connector(Base):
+    __tablename__ = "connectors"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(120), unique=True, index=True)
+    type: Mapped[str] = mapped_column(String(50), index=True)
+    enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    schedule_cron: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    config_json: Mapped[dict[str, object]] = mapped_column(JSON, default=dict, nullable=False)
+    created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    updated_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+        nullable=False,
+    )
+
+
+class ConnectorRun(Base):
+    __tablename__ = "connector_runs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    connector_id: Mapped[int] = mapped_column(ForeignKey("connectors.id"), index=True, nullable=False)
+    started_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    status: Mapped[str] = mapped_column(String(30), index=True, nullable=False)
+    run_mode: Mapped[str] = mapped_column(String(30), default="normal", nullable=False)
+    rows_fetched: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    rows_ingested: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    rows_quarantined: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    error_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    triggered_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+
+
+class ConnectorState(Base):
+    __tablename__ = "connector_state"
+
+    connector_id: Mapped[int] = mapped_column(ForeignKey("connectors.id"), primary_key=True, nullable=False)
+    cursor_state_json: Mapped[dict[str, object]] = mapped_column(JSON, default=dict, nullable=False)
+    last_success_ts: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    last_error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    consecutive_failures: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
